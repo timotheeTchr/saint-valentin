@@ -504,28 +504,35 @@
   function randomPositionForNo(){
     const pad = 12;
 
-    // Sur mobile, visualViewport est plus fiable que innerHeight/innerWidth
-    const vw = window.visualViewport?.width  ?? window.innerWidth;
-    const vh = window.visualViewport?.height ?? window.innerHeight;
+    // dimensions du viewport (zone visible)
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
 
+    // dimensions du bouton
     const bw = noBtn.offsetWidth;
     const bh = noBtn.offsetHeight;
 
-    // clamp helper
-    const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
-
-    // bornes max (si écran trop petit, on évite les valeurs négatives)
+    // si le viewport est trop petit, on évite les NaN/négatifs
     const maxX = Math.max(pad, vw - bw - pad);
     const maxY = Math.max(pad, vh - bh - pad);
 
-    const x = clamp(Math.random() * maxX, pad, maxX);
-    const y = clamp(Math.random() * maxY, pad, maxY);
+    // position aléatoire “dans l’écran”
+    let x = pad + Math.random() * (maxX - pad);
+    let y = pad + Math.random() * (maxY - pad);
 
     noBtn.style.position = 'fixed';
     noBtn.style.left = x + 'px';
     noBtn.style.top  = y + 'px';
-    noBtn.style.zIndex = '9999'; // pour éviter tout “passage derrière”
-}
+    noBtn.style.zIndex = '9999';
+
+    // Sécurité: on corrige si malgré tout ça dépasse (zoom, arrondis, etc.)
+    const r = noBtn.getBoundingClientRect();
+    if (r.right > vw - pad) noBtn.style.left = (vw - pad - bw) + 'px';
+    if (r.bottom > vh - pad) noBtn.style.top = (vh - pad - bh) + 'px';
+    if (r.left < pad) noBtn.style.left = pad + 'px';
+    if (r.top < pad) noBtn.style.top = pad + 'px';
+  }
+
 
 
     let noCount = 0;
@@ -546,8 +553,8 @@
     }
 
     // Desktop
-    noBtn.addEventListener('mouseenter', moveNoForever);
-    noBtn.addEventListener('mousemove', moveNoForever);
+    noBtn.addEventListener('pointerenter', moveNoForever);
+    noBtn.addEventListener('pointerdown', (e)=>{ e.preventDefault(); moveNoForever(); });
     // Mobile
     noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNoForever(); }, {passive:false});
 
