@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Saint-Valentin 💘</title>
+  <title>Qu'est-ce que c'est ?</title>
   <style>
     :root{
       --bg1:#ffdde1; --bg2:#ee9ca7; --card:#ffffffcc; --text:#2b2b2b;
@@ -232,8 +232,6 @@
     <!-- SCREEN 1: Hangman -->
     <section class="screen active" id="hangmanScreen">
       <div class="badge">🧩 <strong>Mini-jeu</strong> • trouve le mot secret</div>
-      <h1>Débloque la question… 🔐</h1>
-      <p class="sub">Indice : c’est un mot très “Saint-Valentin” 😇</p>
 
       <div class="hm-wrap">
         <div class="hm-figure" aria-hidden="true">
@@ -278,17 +276,16 @@
     <!-- SCREEN 2: Question -->
     <section class="screen" id="questionScreen">
       <div class="badge">💌 <strong>Message secret</strong> • ouvre avec ton cœur</div>
-      <h1 id="title">Tu veux être ma Saint-Valentin ? 💘</h1>
+      <h1 id="title">Veux-tu être ma Valentine ? 💘</h1>
       <p class="sub" id="subtitle">Promis, il n’y a aucun piège… (bon ok, peut-être un petit 😇)</p>
 
       <div class="gif" aria-hidden="true"><span id="emoji">🥰</span></div>
 
       <div class="row">
-        <button class="qbtn" id="yesBtn" type="button">Oui 😍</button>
+        <button class="qbtn" id="yesBtn" type="button">Oui 😁</button>
         <button class="qbtn" id="noBtn" type="button">Non 🙈</button>
       </div>
 
-      <div class="fine">Astuce : essaye d’attraper “Non”…</div>
     </section>
   </div>
 
@@ -414,7 +411,7 @@
         setStatus("✅ Gagné ! Tu as débloqué la question 💘", true);
         doneBox.style.display = "block";
       } else {
-        setStatus(`💀 Perdu… Le mot était "${SECRET.toUpperCase()}". Recommence 😉`);
+        setStatus(`💀 Perdu… Recommence 😉`);
         doneBox.style.display = "none";
       }
     }
@@ -542,9 +539,9 @@
       noBtn.style.display = "inline-block";
       noBtn.style.opacity = "1";
 
-      const phrases = ["T’es sûr(e) ? 🥺","Allez stp 😭","Je boude 😤","Essaie encore 😇","Impossible 😈","Hehe 😏","Nope 🙃"];
+      const phrases = ["T’es sûr(e) ? 🤨","Allez stp !!","Essaie encore 😝","Impossible 😈","Hehe 😏","Nope 🙃"];
       subtitle.textContent = phrases[(noCount-1) % phrases.length];
-      const em = ["🥺","😭","😤","😇","😈","😏","🙃"];
+      const em = ["😤","😇","😈","😏","🙃"];
       emoji.textContent = em[(noCount-1) % em.length];
 
       // Oui grandit à l'infini (doucement)
@@ -585,7 +582,7 @@
     yesBtn.addEventListener('click', ()=>{
       confettiBurst();
       overlay.style.display = 'grid';
-      title.textContent = "Je le savais 😍💘";
+      title.textContent = "Je le savais 😁";
       subtitle.textContent = "Trop hâte !!";
       emoji.textContent = "💞";
     });
