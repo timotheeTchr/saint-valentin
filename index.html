@@ -7,7 +7,7 @@
   <style>
     :root{
       --bg1:#ffdde1; --bg2:#ee9ca7; --card:#ffffffcc; --text:#2b2b2b;
-      --yes:#22c55e; --no:#ef4444; --pink:#f43f5e; --muted: rgba(0,0,0,.65);
+      --yes:#22c55e; --no:#ef4444; --muted: rgba(0,0,0,.65);
       --good:#16a34a; --bad:#dc2626;
     }
     *{box-sizing:border-box}
@@ -15,13 +15,16 @@
       margin:0; min-height:100vh; display:grid; place-items:center;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
+      overflow:hidden;
+      background: #f8fafc; /* fond neutre par défaut (pendu) */
+    }
+    body.valentine-bg{
       background: radial-gradient(1200px 600px at 30% 20%, var(--bg1), transparent),
                   radial-gradient(900px 500px at 70% 80%, var(--bg2), transparent),
                   linear-gradient(135deg, #fff1f2, #ffe4e6);
-      overflow:hidden;
     }
 
-    /* Coeurs flottants */
+    /* Coeurs flottants (seulement sur valentine) */
     .heart{
       position:absolute;
       width:18px;height:18px;
@@ -72,107 +75,65 @@
     .screen.active{ display:block; }
 
     /* ---- Hangman ---- */
-    .hm-wrap{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:16px;
-      align-items:center;
-      justify-items:center;
-    }
+    .hm-wrap{ display:grid; grid-template-columns: 1fr; gap:16px; justify-items:center; }
     .hm-word{
       font-size: clamp(22px, 4vw, 34px);
       letter-spacing: .28em;
       padding: 10px 8px 8px;
-      background: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.85);
       border: 1px dashed rgba(0,0,0,.12);
       border-radius: 16px;
       width: min(520px, 90%);
     }
-    .hm-word span{
-      display:inline-block;
-      min-width: .8em;
-    }
-    .hm-meta{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-      font-size:14px; color: rgba(0,0,0,.75);
-    }
-    .pill{
-      padding:8px 10px; border-radius:999px;
-      background:#fff; border:1px solid rgba(0,0,0,.06);
-    }
-    .hm-input{
-      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-      width: min(520px, 100%);
-    }
+    .hm-word span{ display:inline-block; min-width: .8em; }
+    .hm-meta{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; font-size:14px; color: rgba(0,0,0,.75); }
+    .pill{ padding:8px 10px; border-radius:999px; background:#fff; border:1px solid rgba(0,0,0,.06); }
+    .hm-input{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width: min(520px, 100%); }
     input[type="text"]{
-      width: 72px;
-      text-align:center;
-      font-size:18px;
-      padding:12px 10px;
-      border-radius:14px;
+      width: 72px; text-align:center; font-size:18px;
+      padding:12px 10px; border-radius:14px;
       border:1px solid rgba(0,0,0,.12);
-      background: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.95);
       outline:none;
     }
     .btn{
-      border:0;
-      padding:12px 16px;
-      border-radius:14px;
-      font-weight:800;
-      font-size:15px;
-      cursor:pointer;
+      border:0; padding:12px 16px; border-radius:14px;
+      font-weight:800; font-size:15px; cursor:pointer;
       box-shadow: 0 12px 26px rgba(0,0,0,.12);
       transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      background:#111827;
-      color:white;
+      user-select:none; -webkit-tap-highlight-color: transparent;
+      background:#111827; color:white;
     }
     .btn:active{ transform: translateY(1px) scale(.99); }
     .btn.secondary{
-      background: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.9);
       color:#111827;
       border:1px solid rgba(0,0,0,.10);
       box-shadow: none;
       font-weight:700;
     }
-
     .hm-letters{
       display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
-      width:min(560px, 100%);
-      padding-top:6px;
+      width:min(560px, 100%); padding-top:6px;
     }
     .letter{
-      width: 36px; height: 36px;
-      border-radius:12px;
+      width: 36px; height: 36px; border-radius:12px;
       display:grid; place-items:center;
-      background: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.9);
       border:1px solid rgba(0,0,0,.08);
-      font-weight:800;
-      user-select:none;
+      font-weight:800; user-select:none;
     }
     .letter.good{ background: rgba(22,163,74,.16); border-color: rgba(22,163,74,.25); color: var(--good); }
     .letter.bad{ background: rgba(220,38,38,.14); border-color: rgba(220,38,38,.25); color: var(--bad); text-decoration: line-through; }
-
-    .hm-status{
-      font-size:14px;
-      color: var(--muted);
-      min-height: 20px;
-    }
-    .hm-done{
-      display:none;
-      margin-top: 6px;
-      font-size: 14px;
-      color: rgba(0,0,0,.75);
-    }
+    .hm-status{ font-size:14px; color: var(--muted); min-height: 20px; }
+    .hm-done{ display:none; margin-top: 6px; font-size: 14px; color: rgba(0,0,0,.75); }
     .hm-done strong{ color: #111827; }
 
-    /* “illustration” pendu minimaliste */
     .hm-figure{
       width: min(360px, 90%);
       height: 160px;
       border-radius: 18px;
-      background: rgba(255,255,255,.60);
+      background: rgba(255,255,255,.85);
       border: 1px solid rgba(0,0,0,.06);
       position:relative;
       overflow:hidden;
@@ -203,7 +164,6 @@
         radial-gradient(120px 90px at 30% 35%, #fff, transparent),
         radial-gradient(140px 100px at 70% 65%, #fff, transparent),
         linear-gradient(135deg, #fecdd3, #fda4af);
-      position:relative;
       overflow:hidden;
     }
     .gif span{
@@ -213,43 +173,27 @@
     }
     @keyframes pop{ from{transform:scale(0.96)} to{transform:scale(1.08)} }
 
-    .row{
-      display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding-top:8px;
-    }
+    .row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding-top:8px; }
     .qbtn{
-      border:0;
-      padding:14px 18px;
-      border-radius:14px;
-      font-weight:800;
-      font-size:16px;
-      cursor:pointer;
+      border:0; padding:14px 18px; border-radius:14px;
+      font-weight:800; font-size:16px; cursor:pointer;
       box-shadow: 0 12px 26px rgba(0,0,0,.12);
       transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
+      user-select:none; -webkit-tap-highlight-color: transparent;
     }
     .qbtn:active{ transform: translateY(1px) scale(.99); }
-
-    #yesBtn{
-      background: linear-gradient(135deg, #34d399, var(--yes));
-      color:white;
-      min-width: 160px;
-    }
+    #yesBtn{ background: linear-gradient(135deg, #34d399, var(--yes)); color:white; min-width: 160px; }
     #noBtn{
       background: linear-gradient(135deg, #fb7185, var(--no));
-      color:white;
-      min-width: 160px;
+      color:white; min-width: 160px;
       position:relative;
       touch-action:none;
     }
-
     .fine{ margin-top:14px; font-size:12px; opacity:.65; }
 
-    /* overlay final */
     .overlay{
       position:fixed; inset:0;
-      display:none;
-      place-items:center;
+      display:none; place-items:center;
       background: rgba(0,0,0,.35);
       backdrop-filter: blur(8px);
       z-index:50;
@@ -257,10 +201,8 @@
     }
     .modal{
       width:min(560px, 92vw);
-      background:white;
-      border-radius:22px;
-      padding:24px 18px;
-      text-align:center;
+      background:white; border-radius:22px;
+      padding:24px 18px; text-align:center;
       box-shadow: 0 30px 90px rgba(0,0,0,.25);
     }
     .modal h2{ margin:8px 0; font-size: clamp(22px, 3.2vw, 30px); }
@@ -271,12 +213,10 @@
       border:0; cursor:pointer;
     }
 
-    /* confettis */
     .confetti{
       position:fixed; top:-20px;
       width:10px; height:14px;
       opacity:0.9;
-      transform: rotate(0deg);
       animation: fall linear forwards;
       z-index:60;
       pointer-events:none;
@@ -319,18 +259,17 @@
 
         <div class="hm-input">
           <input id="guess" type="text" inputmode="text" maxlength="1" placeholder="?" aria-label="Lettre" />
-          <button class="btn" id="guessBtn">Essayer</button>
+          <button class="btn" id="guessBtn" type="button">Essayer</button>
           <button class="btn secondary" id="resetBtn" type="button">Recommencer</button>
         </div>
 
         <div class="hm-status" id="status"></div>
-
         <div class="hm-letters" id="letters"></div>
 
         <div class="hm-done" id="doneBox">
           <strong>Bravo !</strong> Tu as trouvé le mot 💖
           <div style="margin-top:10px">
-            <button class="btn" id="continueBtn">Continuer ➜</button>
+            <button class="btn" id="continueBtn" type="button">Continuer ➜</button>
           </div>
         </div>
       </div>
@@ -345,8 +284,8 @@
       <div class="gif" aria-hidden="true"><span id="emoji">🥰</span></div>
 
       <div class="row">
-        <button class="qbtn" id="yesBtn">Oui 😍</button>
-        <button class="qbtn" id="noBtn">Non 🙈</button>
+        <button class="qbtn" id="yesBtn" type="button">Oui 😍</button>
+        <button class="qbtn" id="noBtn" type="button">Non 🙈</button>
       </div>
 
       <div class="fine">Astuce : essaye d’attraper “Non”…</div>
@@ -358,12 +297,18 @@
       <div style="font-size:56px">🎉💖</div>
       <h2>Yesss !!</h2>
       <p id="finalText">Rendez-vous pour un date : pizza + film + câlins ? 🍕🎬</p>
-      <button class="close" id="closeBtn">Ok 😘</button>
+      <button class="close" id="closeBtn" type="button">Ok 😘</button>
     </div>
   </div>
 
   <script>
-    // -------------------- Background hearts --------------------
+    // -------------------- Helpers --------------------
+    function normalizeLetter(ch){
+      return (ch || "").toLowerCase().replace(/[^a-z]/g, "");
+    }
+
+    // -------------------- Background hearts (ONLY on valentine screen) --------------------
+    let heartsTimer = null;
     function spawnHeart(){
       const h = document.createElement('div');
       h.className = 'heart';
@@ -379,20 +324,24 @@
       document.body.appendChild(h);
       setTimeout(()=>h.remove(), dur*1000);
     }
-    setInterval(spawnHeart, 380);
+    function enableValentineBg(){
+      document.body.classList.add('valentine-bg');
+      if (!heartsTimer) heartsTimer = setInterval(spawnHeart, 380);
+    }
 
     // -------------------- Screens --------------------
     const hangmanScreen = document.getElementById('hangmanScreen');
     const questionScreen = document.getElementById('questionScreen');
+
     function showQuestion(){
       hangmanScreen.classList.remove('active');
       questionScreen.classList.add('active');
-      // remet le bouton Non à une position “normale”
+      enableValentineBg();
       resetNoButton();
     }
 
     // -------------------- Hangman --------------------
-    const SECRET = "valentine"; // mot à trouver
+    const SECRET = "valentine";
     const MAX_MISSES = 6;
 
     const wordEl = document.getElementById('word');
@@ -419,10 +368,6 @@
     let misses = 0;
     let finished = false;
 
-    function normalizeLetter(ch){
-      return (ch || "").toLowerCase().replace(/[^a-z]/g, "");
-    }
-
     function renderWord(){
       const chars = SECRET.split("");
       wordEl.innerHTML = chars.map(c=>{
@@ -443,9 +388,7 @@
     }
 
     function renderFigure(){
-      parts.forEach((p,i)=>{
-        p.classList.toggle('show', i < misses);
-      });
+      parts.forEach((p,i)=> p.classList.toggle('show', i < misses));
     }
 
     function renderMeta(){
@@ -510,9 +453,7 @@
       renderLetters();
       renderMeta();
 
-      if (isWin()){
-        endGame(true);
-      }
+      if (isWin()) endGame(true);
     }
 
     function resetHangman(){
@@ -533,17 +474,12 @@
 
     guessBtn.addEventListener('click', tryGuess);
     resetBtn.addEventListener('click', resetHangman);
-    guessInput.addEventListener('keydown', (e)=>{
-      if (e.key === "Enter") tryGuess();
-    });
+    guessInput.addEventListener('keydown', (e)=>{ if (e.key === "Enter") tryGuess(); });
     continueBtn.addEventListener('click', showQuestion);
 
-    reset // (rien)
-
-    // init hangman
     resetHangman();
 
-    // -------------------- Question / moving NO forever --------------------
+    // -------------------- Valentine screen (Yes/No) --------------------
     const yesBtn = document.getElementById('yesBtn');
     const noBtn  = document.getElementById('noBtn');
     const overlay = document.getElementById('overlay');
@@ -552,14 +488,13 @@
     const title = document.getElementById('title');
     const subtitle = document.getElementById('subtitle');
 
-    // Personnalisation
+    // Personnalisation rapide
     const NAME = ""; // ex: "Sarah"
     const FINAL_LINE = "Rendez-vous pour un date : pizza + film + câlins ? 🍕🎬";
     if (NAME.trim()) title.textContent = `${NAME}, tu veux être ma Saint-Valentin ? 💘`;
     document.getElementById('finalText').textContent = FINAL_LINE;
 
     function resetNoButton(){
-      // remet le bouton dans le flux normal si tu reviens à l'écran
       noBtn.style.position = "relative";
       noBtn.style.left = "";
       noBtn.style.top = "";
@@ -570,7 +505,6 @@
       const pad = 12;
       const maxX = window.innerWidth  - noBtn.offsetWidth  - pad;
       const maxY = window.innerHeight - noBtn.offsetHeight - pad;
-
       const x = Math.max(pad, Math.random() * maxX);
       const y = Math.max(pad, Math.random() * maxY);
 
@@ -579,39 +513,25 @@
       noBtn.style.top  = y + 'px';
     }
 
-    // IMPORTANT : à l'infini -> pas de limite sur le compteur,
-    // pas de cap sur l'agrandissement, et le bouton Non bouge toujours.
     let noCount = 0;
-
     function moveNoForever(){
       noCount++;
       randomPositionForNo();
 
-      // petites phrases qui tournent (cycle infini)
-      const phrases = [
-        "T’es sûr(e) ? 🥺",
-        "Allez stp 😭",
-        "Je boude 😤",
-        "Essaie encore 😇",
-        "Impossible 😈",
-        "Tu peux pas 😌",
-        "Hehe 😏",
-        "Nope 🙃"
-      ];
+      const phrases = ["T’es sûr(e) ? 🥺","Allez stp 😭","Je boude 😤","Essaie encore 😇","Impossible 😈","Hehe 😏","Nope 🙃"];
       subtitle.textContent = phrases[(noCount-1) % phrases.length];
-      const em = ["🥺","😳","😭","😤","😈","😌","😏","🙃"];
+      const em = ["🥺","😭","😤","😇","😈","😏","🙃"];
       emoji.textContent = em[(noCount-1) % em.length];
 
-      // Optionnel: le "Oui" devient plus grand… à l'infini 😈
-      const scale = 1 + noCount * 0.04; // augmente à chaque fuite
+      // Oui grandit à l'infini (doucement)
+      const scale = 1 + Math.log1p(noCount) * 0.18;
       yesBtn.style.transform = `scale(${scale})`;
     }
 
-    // Le “Non” fuit au survol (desktop) + à l’approche du pointeur
+    // Desktop
     noBtn.addEventListener('mouseenter', moveNoForever);
     noBtn.addEventListener('mousemove', moveNoForever);
-
-    // Mobile: dès qu’on essaie de toucher
+    // Mobile
     noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNoForever(); }, {passive:false});
 
     function confettiBurst(){
@@ -649,9 +569,7 @@
     closeBtn.addEventListener('click', ()=> overlay.style.display = 'none');
     window.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') overlay.style.display = 'none'; });
 
-    // Si la fenêtre change (rotation mobile), on évite que Non sorte de l’écran
     window.addEventListener('resize', ()=>{
-      // si "Non" est déjà en fixed, on le replace
       if (getComputedStyle(noBtn).position === "fixed") randomPositionForNo();
     });
   </script>
