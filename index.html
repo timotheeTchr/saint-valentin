@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Saint-Valentin 💘</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --yes:#22c55e;
+      --no:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 30% 20%, var(--bg1), transparent),
+                  radial-gradient(900px 500px at 70% 80%, var(--bg2), transparent),
+                  linear-gradient(135deg, #fff1f2, #ffe4e6);
+      overflow:hidden;
+    }
+
+    /* petits coeurs flottants */
+    .heart{
+      position:absolute;
+      width:18px;height:18px;
+      transform: rotate(45deg);
+      background: rgba(255, 0, 98, .18);
+      animation: floatUp linear forwards;
+      border-radius: 3px;
+      pointer-events:none;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:18px;height:18px;
+      background: inherit;
+      border-radius:50%;
+    }
+    .heart:before{ left:-9px; top:0; }
+    .heart:after{ left:0; top:-9px; }
+    @keyframes floatUp{
+      from{ transform: translateY(0) rotate(45deg); opacity:.0;}
+      10%{opacity:1}
+      to{ transform: translateY(-120vh) rotate(45deg); opacity:0;}
+    }
+
+    .card{
+      width:min(560px, 92vw);
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.6);
+      backdrop-filter: blur(10px);
+      border-radius:22px;
+      padding:28px 22px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.12);
+      text-align:center;
+      position:relative;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      font-size:14px;
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:8px 0 6px;
+      font-size: clamp(26px, 4vw, 38px);
+      letter-spacing:-0.02em;
+    }
+
+    .sub{
+      margin:0 0 18px;
+      font-size: clamp(14px, 2.2vw, 16px);
+      opacity:.85;
+      line-height:1.4;
+    }
+
+    .gif{
+      width: min(320px, 75vw);
+      margin: 12px auto 18px;
+      aspect-ratio: 1 / 1;
+      border-radius:20px;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(120px 90px at 30% 35%, #fff, transparent),
+        radial-gradient(140px 100px at 70% 65%, #fff, transparent),
+        linear-gradient(135deg, #fecdd3, #fda4af);
+      position:relative;
+      overflow:hidden;
+    }
+    .gif span{
+      font-size:64px;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.15));
+      animation: pop 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes pop{ from{transform:scale(0.96)} to{transform:scale(1.08)} }
+
+    .row{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      padding-top:8px;
+    }
+
+    button{
+      border:0;
+      padding:14px 18px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow: 0 12px 26px rgba(0,0,0,.12);
+      transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+
+    #yesBtn{
+      background: linear-gradient(135deg, #34d399, var(--yes));
+      color:white;
+      min-width: 160px;
+    }
+    #noBtn{
+      background: linear-gradient(135deg, #fb7185, var(--no));
+      color:white;
+      min-width: 160px;
+      position:relative; /* important pour le “fuit” sur mobile */
+    }
+
+    .fine{
+      margin-top:14px;
+      font-size:12px;
+      opacity:.65;
+    }
+
+    /* écran final */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      place-items:center;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
+      z-index:50;
+      padding:20px;
+    }
+    .modal{
+      width:min(560px, 92vw);
+      background:white;
+      border-radius:22px;
+      padding:24px 18px;
+      text-align:center;
+      box-shadow: 0 30px 90px rgba(0,0,0,.25);
+    }
+    .modal h2{ margin:8px 0; font-size: clamp(22px, 3.2vw, 30px); }
+    .modal p{ margin:0 0 14px; opacity:.85; }
+    .close{
+      background:#111827;
+      color:white;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:700;
+    }
+
+    /* confettis */
+    .confetti{
+      position:fixed;
+      top:-20px;
+      width:10px;
+      height:14px;
+      opacity:0.9;
+      transform: rotate(0deg);
+      animation: fall linear forwards;
+      z-index:60;
+      pointer-events:none;
+    }
+    @keyframes fall{
+      to{
+        transform: translateY(110vh) rotate(720deg);
+        opacity:1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="badge">💌 <strong>Message secret</strong> • ouvre avec ton cœur</div>
+    <h1 id="title">Tu veux être ma Saint-Valentin ? 💘</h1>
+    <p class="sub" id="subtitle">
+      Promis, il n’y a aucun piège… (bon ok, peut-être un petit 😇)
+    </p>
+
+    <div class="gif" aria-hidden="true">
+      <span id="emoji">🥰</span>
+    </div>
+
+    <div class="row">
+      <button id="yesBtn">Oui 😍</button>
+      <button id="noBtn">Non 🙈</button>
+    </div>
+
+    <div class="fine">Astuce : sur mobile, essaye d’appuyer sur “Non”…</div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div style="font-size:56px">🎉💖</div>
+      <h2>Yesss !!</h2>
+      <p id="finalText">Rendez-vous pour un date : <strong>pizza + film + câlins</strong> ? 🍕🎬</p>
+      <button class="close" id="closeBtn">Ok 😘</button>
+    </div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn  = document.getElementById('noBtn');
+    const overlay = document.getElementById('overlay');
+    const closeBtn = document.getElementById('closeBtn');
+    const emoji = document.getElementById('emoji');
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+
+    // Personnalisation rapide (modifie ici)
+    const NAME = ""; // ex: "Sarah"
+    const FINAL_LINE = "Rendez-vous pour un date : pizza + film + câlins ? 🍕🎬";
+
+    if (NAME.trim()) {
+      title.textContent = `${NAME}, tu veux être ma Saint-Valentin ? 💘`;
+    }
+    document.getElementById('finalText').textContent = FINAL_LINE;
+
+    // coeurs en fond
+    function spawnHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const x = Math.random() * 100;
+      const dur = 6 + Math.random() * 6;      // 6-12s
+      const size = 10 + Math.random() * 18;   // 10-28px
+      h.style.left = x + 'vw';
+      h.style.bottom = (-20 - Math.random()*40) + 'px';
+      h.style.animationDuration = dur + 's';
+      h.style.width = size + 'px';
+      h.style.height = size + 'px';
+      h.style.background = `rgba(255, 0, 98, ${0.10 + Math.random()*0.18})`;
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), dur*1000);
+    }
+    setInterval(spawnHeart, 380);
+
+    // Le "Non" fuit le curseur / le doigt
+    let noCount = 0;
+    function moveNoButton(){
+      noCount++;
+      // on rétrécit légèrement la zone si l'écran est petit
+      const pad = 18;
+      const maxX = window.innerWidth  - noBtn.offsetWidth  - pad;
+      const maxY = window.innerHeight - noBtn.offsetHeight - pad;
+
+      const x = Math.max(pad, Math.random() * maxX);
+      const y = Math.max(pad, Math.random() * maxY);
+
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
+
+      // escalade “mignonne”
+      const phrases = [
+        "T’es sûr(e) ? 🥺",
+        "Allez stp 😭",
+        "Je boude 😤",
+        "Dernière chance 😇",
+        "Impossible 😈"
+      ];
+      subtitle.textContent = phrases[Math.min(noCount-1, phrases.length-1)];
+      emoji.textContent = ["🥺","😳","😭","😤","😈"][Math.min(noCount-1, 4)];
+
+      // le bouton Oui devient un peu plus “tentant”
+      const scale = 1 + Math.min(noCount, 6) * 0.08;
+      yesBtn.style.transform = `scale(${scale})`;
+      yesBtn.style.boxShadow = `0 18px 40px rgba(0,0,0,.16)`;
+    }
+
+    // Desktop: au survol, il fuit
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    // Mobile: dès qu’on essaie de toucher
+    noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNoButton(); }, {passive:false});
+
+    // Confettis quand “Oui”
+    function confettiBurst(){
+      const count = 120;
+      for (let i=0; i<count; i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        const x = Math.random() * 100;
+        const dur = 2.8 + Math.random() * 2.6;
+        const drift = (Math.random()*2 - 1) * 120;
+        const w = 6 + Math.random()*10;
+        const h = 8 + Math.random()*16;
+
+        c.style.left = x + 'vw';
+        c.style.animationDuration = dur + 's';
+        c.style.width = w + 'px';
+        c.style.height = h + 'px';
+        c.style.borderRadius = (Math.random() > 0.6) ? '999px' : '2px';
+        // couleurs au hasard
+        const colors = ["#fb7185","#f43f5e","#ec4899","#a78bfa","#60a5fa","#34d399","#f59e0b"];
+        c.style.background = colors[Math.floor(Math.random()*colors.length)];
+        c.style.transform = `translateX(${drift}px) rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), dur*1000);
+      }
+    }
+
+    yesBtn.addEventListener('click', ()=>{
+      confettiBurst();
+      overlay.style.display = 'grid';
+      title.textContent = "Je le savais 😍💘";
+      subtitle.textContent = "Trop hâte !!";
+      emoji.textContent = "💞";
+    });
+
+    closeBtn.addEventListener('click', ()=>{
+      overlay.style.display = 'none';
+    });
+
+    // Échap ferme l’overlay
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'Escape') overlay.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
