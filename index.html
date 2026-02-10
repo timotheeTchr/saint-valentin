@@ -501,22 +501,39 @@
       noBtn.style.transform = "";
     }
 
-    function randomPositionForNo(){
-      const pad = 12;
-      const maxX = window.innerWidth  - noBtn.offsetWidth  - pad;
-      const maxY = window.innerHeight - noBtn.offsetHeight - pad;
-      const x = Math.max(pad, Math.random() * maxX);
-      const y = Math.max(pad, Math.random() * maxY);
+  function randomPositionForNo(){
+    const pad = 12;
 
-      noBtn.style.position = 'fixed';
-      noBtn.style.left = x + 'px';
-      noBtn.style.top  = y + 'px';
-    }
+    // Sur mobile, visualViewport est plus fiable que innerHeight/innerWidth
+    const vw = window.visualViewport?.width  ?? window.innerWidth;
+    const vh = window.visualViewport?.height ?? window.innerHeight;
+
+    const bw = noBtn.offsetWidth;
+    const bh = noBtn.offsetHeight;
+
+    // clamp helper
+    const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+
+    // bornes max (si écran trop petit, on évite les valeurs négatives)
+    const maxX = Math.max(pad, vw - bw - pad);
+    const maxY = Math.max(pad, vh - bh - pad);
+
+    const x = clamp(Math.random() * maxX, pad, maxX);
+    const y = clamp(Math.random() * maxY, pad, maxY);
+
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = x + 'px';
+    noBtn.style.top  = y + 'px';
+    noBtn.style.zIndex = '9999'; // pour éviter tout “passage derrière”
+}
+
 
     let noCount = 0;
     function moveNoForever(){
       noCount++;
       randomPositionForNo();
+      noBtn.style.display = "inline-block";
+      noBtn.style.opacity = "1";
 
       const phrases = ["T’es sûr(e) ? 🥺","Allez stp 😭","Je boude 😤","Essaie encore 😇","Impossible 😈","Hehe 😏","Nope 🙃"];
       subtitle.textContent = phrases[(noCount-1) % phrases.length];
