@@ -6,19 +6,13 @@
   <title>Saint-Valentin 💘</title>
   <style>
     :root{
-      --bg1:#ffdde1;
-      --bg2:#ee9ca7;
-      --card:#ffffffcc;
-      --text:#2b2b2b;
-      --yes:#22c55e;
-      --no:#ef4444;
+      --bg1:#ffdde1; --bg2:#ee9ca7; --card:#ffffffcc; --text:#2b2b2b;
+      --yes:#22c55e; --no:#ef4444; --pink:#f43f5e; --muted: rgba(0,0,0,.65);
+      --good:#16a34a; --bad:#dc2626;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      min-height:100vh;
-      display:grid;
-      place-items:center;
+      margin:0; min-height:100vh; display:grid; place-items:center;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
       background: radial-gradient(1200px 600px at 30% 20%, var(--bg1), transparent),
@@ -27,7 +21,7 @@
       overflow:hidden;
     }
 
-    /* petits coeurs flottants */
+    /* Coeurs flottants */
     .heart{
       position:absolute;
       width:18px;height:18px;
@@ -47,13 +41,13 @@
     .heart:before{ left:-9px; top:0; }
     .heart:after{ left:0; top:-9px; }
     @keyframes floatUp{
-      from{ transform: translateY(0) rotate(45deg); opacity:.0;}
+      from{ transform: translateY(0) rotate(45deg); opacity:0;}
       10%{opacity:1}
       to{ transform: translateY(-120vh) rotate(45deg); opacity:0;}
     }
 
     .card{
-      width:min(600px, 92vw);
+      width:min(640px, 92vw);
       background:var(--card);
       border:1px solid rgba(255,255,255,.6);
       backdrop-filter: blur(10px);
@@ -65,30 +59,139 @@
     }
 
     .badge{
-      display:inline-flex;
-      gap:8px;
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px; border-radius:999px;
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+      font-size:14px; margin-bottom:10px;
+    }
+
+    h1{ margin:8px 0 8px; font-size: clamp(24px, 4vw, 36px); letter-spacing:-0.02em; }
+    .sub{ margin:0 0 18px; font-size: clamp(14px, 2.2vw, 16px); opacity:.85; line-height:1.4; }
+
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* ---- Hangman ---- */
+    .hm-wrap{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:16px;
       align-items:center;
-      padding:8px 12px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.06);
+      justify-items:center;
+    }
+    .hm-word{
+      font-size: clamp(22px, 4vw, 34px);
+      letter-spacing: .28em;
+      padding: 10px 8px 8px;
+      background: rgba(255,255,255,.7);
+      border: 1px dashed rgba(0,0,0,.12);
+      border-radius: 16px;
+      width: min(520px, 90%);
+    }
+    .hm-word span{
+      display:inline-block;
+      min-width: .8em;
+    }
+    .hm-meta{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+      font-size:14px; color: rgba(0,0,0,.75);
+    }
+    .pill{
+      padding:8px 10px; border-radius:999px;
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+    }
+    .hm-input{
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+      width: min(520px, 100%);
+    }
+    input[type="text"]{
+      width: 72px;
+      text-align:center;
+      font-size:18px;
+      padding:12px 10px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.9);
+      outline:none;
+    }
+    .btn{
+      border:0;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:800;
+      font-size:15px;
+      cursor:pointer;
+      box-shadow: 0 12px 26px rgba(0,0,0,.12);
+      transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      background:#111827;
+      color:white;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.secondary{
+      background: rgba(255,255,255,.85);
+      color:#111827;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: none;
+      font-weight:700;
+    }
+
+    .hm-letters{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
+      width:min(560px, 100%);
+      padding-top:6px;
+    }
+    .letter{
+      width: 36px; height: 36px;
+      border-radius:12px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.85);
+      border:1px solid rgba(0,0,0,.08);
+      font-weight:800;
+      user-select:none;
+    }
+    .letter.good{ background: rgba(22,163,74,.16); border-color: rgba(22,163,74,.25); color: var(--good); }
+    .letter.bad{ background: rgba(220,38,38,.14); border-color: rgba(220,38,38,.25); color: var(--bad); text-decoration: line-through; }
+
+    .hm-status{
       font-size:14px;
-      margin-bottom:10px;
+      color: var(--muted);
+      min-height: 20px;
     }
-
-    h1{
-      margin:8px 0 6px;
-      font-size: clamp(26px, 4vw, 38px);
-      letter-spacing:-0.02em;
+    .hm-done{
+      display:none;
+      margin-top: 6px;
+      font-size: 14px;
+      color: rgba(0,0,0,.75);
     }
+    .hm-done strong{ color: #111827; }
 
-    .sub{
-      margin:0 0 18px;
-      font-size: clamp(14px, 2.2vw, 16px);
-      opacity:.85;
-      line-height:1.4;
+    /* “illustration” pendu minimaliste */
+    .hm-figure{
+      width: min(360px, 90%);
+      height: 160px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.60);
+      border: 1px solid rgba(0,0,0,.06);
+      position:relative;
+      overflow:hidden;
     }
+    .bar{ position:absolute; background: rgba(0,0,0,.18); border-radius: 6px; }
+    .bar.base{ left:26px; right:26px; bottom:18px; height:10px; }
+    .bar.pole{ left:58px; bottom:18px; width:10px; height:120px; }
+    .bar.top{ left:58px; top:22px; width:170px; height:10px; }
+    .bar.rope{ left:218px; top:22px; width:8px; height:28px; border-radius: 999px; }
+    .part{ position:absolute; opacity:0; transition: opacity .25s ease; }
+    .part.show{ opacity:1; }
+    .head{ left:200px; top:50px; width:44px; height:44px; border:8px solid rgba(244,63,94,.45); border-radius:999px; }
+    .body{ left:219px; top:94px; width:8px; height:44px; background: rgba(244,63,94,.45); border-radius:999px; }
+    .armL{ left:219px; top:104px; width:34px; height:8px; background: rgba(244,63,94,.45); border-radius:999px; transform: rotate(-25deg); transform-origin:left center; }
+    .armR{ left:193px; top:104px; width:34px; height:8px; background: rgba(244,63,94,.45); border-radius:999px; transform: rotate(25deg); transform-origin:right center; }
+    .legL{ left:219px; top:132px; width:34px; height:8px; background: rgba(244,63,94,.45); border-radius:999px; transform: rotate(25deg); transform-origin:left center; }
+    .legR{ left:193px; top:132px; width:34px; height:8px; background: rgba(244,63,94,.45); border-radius:999px; transform: rotate(-25deg); transform-origin:right center; }
 
+    /* ---- Question ---- */
     .gif{
       width: min(320px, 75vw);
       margin: 12px auto 18px;
@@ -111,18 +214,13 @@
     @keyframes pop{ from{transform:scale(0.96)} to{transform:scale(1.08)} }
 
     .row{
-      display:flex;
-      gap:12px;
-      justify-content:center;
-      flex-wrap:wrap;
-      padding-top:8px;
+      display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding-top:8px;
     }
-
-    button{
+    .qbtn{
       border:0;
       padding:14px 18px;
       border-radius:14px;
-      font-weight:700;
+      font-weight:800;
       font-size:16px;
       cursor:pointer;
       box-shadow: 0 12px 26px rgba(0,0,0,.12);
@@ -130,7 +228,7 @@
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    button:active{ transform: translateY(1px) scale(.99); }
+    .qbtn:active{ transform: translateY(1px) scale(.99); }
 
     #yesBtn{
       background: linear-gradient(135deg, #34d399, var(--yes));
@@ -141,19 +239,15 @@
       background: linear-gradient(135deg, #fb7185, var(--no));
       color:white;
       min-width: 160px;
-      position:relative; /* important pour le “fuit” sur mobile */
+      position:relative;
+      touch-action:none;
     }
 
-    .fine{
-      margin-top:14px;
-      font-size:12px;
-      opacity:.65;
-    }
+    .fine{ margin-top:14px; font-size:12px; opacity:.65; }
 
-    /* écran final */
+    /* overlay final */
     .overlay{
-      position:fixed;
-      inset:0;
+      position:fixed; inset:0;
       display:none;
       place-items:center;
       background: rgba(0,0,0,.35);
@@ -172,19 +266,15 @@
     .modal h2{ margin:8px 0; font-size: clamp(22px, 3.2vw, 30px); }
     .modal p{ margin:0 0 14px; opacity:.85; }
     .close{
-      background:#111827;
-      color:white;
-      padding:12px 16px;
-      border-radius:12px;
-      font-weight:700;
+      background:#111827; color:white;
+      padding:12px 16px; border-radius:12px; font-weight:800;
+      border:0; cursor:pointer;
     }
 
     /* confettis */
     .confetti{
-      position:fixed;
-      top:-20px;
-      width:10px;
-      height:14px;
+      position:fixed; top:-20px;
+      width:10px; height:14px;
       opacity:0.9;
       transform: rotate(0deg);
       animation: fall linear forwards;
@@ -192,67 +282,94 @@
       pointer-events:none;
     }
     @keyframes fall{
-      to{
-        transform: translateY(110vh) rotate(720deg);
-        opacity:1;
-      }
+      to{ transform: translateY(110vh) rotate(720deg); opacity:1; }
     }
   </style>
 </head>
 <body>
-  <div class="card" id="card">
-    <div class="badge">💌 <strong>Message secret</strong> • ouvre avec ton cœur</div>
-    <h1 id="title">Veux tu être ma Valentine ? 💘</h1>
-    <p class="sub" id="subtitle">
-      Promis, il n’y a aucun piège… (bon ok, peut-être un petit 😇)
-    </p>
+  <div class="card">
 
-    <div class="gif" aria-hidden="true">
-      <span id="emoji">🥰</span>
-    </div>
+    <!-- SCREEN 1: Hangman -->
+    <section class="screen active" id="hangmanScreen">
+      <div class="badge">🧩 <strong>Mini-jeu</strong> • trouve le mot secret</div>
+      <h1>Débloque la question… 🔐</h1>
+      <p class="sub">Indice : c’est un mot très “Saint-Valentin” 😇</p>
 
-    <div class="row">
-      <button id="yesBtn">Oui 😍</button>
-      <button id="noBtn">Non 🙈</button>
-    </div>
+      <div class="hm-wrap">
+        <div class="hm-figure" aria-hidden="true">
+          <div class="bar base"></div>
+          <div class="bar pole"></div>
+          <div class="bar top"></div>
+          <div class="bar rope"></div>
 
-    <div class="fine">Astuce : sur mobile, essaye d’appuyer sur “Non”…</div>
+          <div class="part head" id="p1"></div>
+          <div class="part body" id="p2"></div>
+          <div class="part armL" id="p3"></div>
+          <div class="part armR" id="p4"></div>
+          <div class="part legL" id="p5"></div>
+          <div class="part legR" id="p6"></div>
+        </div>
+
+        <div class="hm-word" id="word"></div>
+
+        <div class="hm-meta">
+          <div class="pill">Erreurs : <strong id="misses">0</strong>/6</div>
+          <div class="pill">Lettres essayées : <strong id="triedCount">0</strong></div>
+        </div>
+
+        <div class="hm-input">
+          <input id="guess" type="text" inputmode="text" maxlength="1" placeholder="?" aria-label="Lettre" />
+          <button class="btn" id="guessBtn">Essayer</button>
+          <button class="btn secondary" id="resetBtn" type="button">Recommencer</button>
+        </div>
+
+        <div class="hm-status" id="status"></div>
+
+        <div class="hm-letters" id="letters"></div>
+
+        <div class="hm-done" id="doneBox">
+          <strong>Bravo !</strong> Tu as trouvé le mot 💖
+          <div style="margin-top:10px">
+            <button class="btn" id="continueBtn">Continuer ➜</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: Question -->
+    <section class="screen" id="questionScreen">
+      <div class="badge">💌 <strong>Message secret</strong> • ouvre avec ton cœur</div>
+      <h1 id="title">Tu veux être ma Saint-Valentin ? 💘</h1>
+      <p class="sub" id="subtitle">Promis, il n’y a aucun piège… (bon ok, peut-être un petit 😇)</p>
+
+      <div class="gif" aria-hidden="true"><span id="emoji">🥰</span></div>
+
+      <div class="row">
+        <button class="qbtn" id="yesBtn">Oui 😍</button>
+        <button class="qbtn" id="noBtn">Non 🙈</button>
+      </div>
+
+      <div class="fine">Astuce : essaye d’attraper “Non”…</div>
+    </section>
   </div>
 
   <div class="overlay" id="overlay">
     <div class="modal">
       <div style="font-size:56px">🎉💖</div>
       <h2>Yesss !!</h2>
-      <p id="finalText">Rendez-vous pour un date : <strong>pizza + film + câlins</strong> ? 🍕🎬</p>
+      <p id="finalText">Rendez-vous pour un date : pizza + film + câlins ? 🍕🎬</p>
       <button class="close" id="closeBtn">Ok 😘</button>
     </div>
   </div>
 
   <script>
-    const yesBtn = document.getElementById('yesBtn');
-    const noBtn  = document.getElementById('noBtn');
-    const overlay = document.getElementById('overlay');
-    const closeBtn = document.getElementById('closeBtn');
-    const emoji = document.getElementById('emoji');
-    const title = document.getElementById('title');
-    const subtitle = document.getElementById('subtitle');
-
-    // Personnalisation rapide (modifie ici)
-    const NAME = ""; // ex: "Sarah"
-    const FINAL_LINE = "Rendez-vous pour un date : pizza + film + câlins ? 🍕🎬";
-
-    if (NAME.trim()) {
-      title.textContent = `${NAME}, tu veux être ma Saint-Valentin ? 💘`;
-    }
-    document.getElementById('finalText').textContent = FINAL_LINE;
-
-    // coeurs en fond
+    // -------------------- Background hearts --------------------
     function spawnHeart(){
       const h = document.createElement('div');
       h.className = 'heart';
       const x = Math.random() * 100;
-      const dur = 6 + Math.random() * 6;      // 6-12s
-      const size = 10 + Math.random() * 18;   // 10-28px
+      const dur = 6 + Math.random() * 6;
+      const size = 10 + Math.random() * 18;
       h.style.left = x + 'vw';
       h.style.bottom = (-20 - Math.random()*40) + 'px';
       h.style.animationDuration = dur + 's';
@@ -264,12 +381,193 @@
     }
     setInterval(spawnHeart, 380);
 
-    // Le "Non" fuit le curseur / le doigt
-    let noCount = 0;
-    function moveNoButton(){
-      noCount++;
-      // on rétrécit légèrement la zone si l'écran est petit
-      const pad = 18;
+    // -------------------- Screens --------------------
+    const hangmanScreen = document.getElementById('hangmanScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    function showQuestion(){
+      hangmanScreen.classList.remove('active');
+      questionScreen.classList.add('active');
+      // remet le bouton Non à une position “normale”
+      resetNoButton();
+    }
+
+    // -------------------- Hangman --------------------
+    const SECRET = "valentine"; // mot à trouver
+    const MAX_MISSES = 6;
+
+    const wordEl = document.getElementById('word');
+    const missesEl = document.getElementById('misses');
+    const triedCountEl = document.getElementById('triedCount');
+    const lettersEl = document.getElementById('letters');
+    const statusEl = document.getElementById('status');
+    const guessInput = document.getElementById('guess');
+    const guessBtn = document.getElementById('guessBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const doneBox = document.getElementById('doneBox');
+
+    const parts = [
+      document.getElementById('p1'),
+      document.getElementById('p2'),
+      document.getElementById('p3'),
+      document.getElementById('p4'),
+      document.getElementById('p5'),
+      document.getElementById('p6')
+    ];
+
+    let guessed = new Set();
+    let misses = 0;
+    let finished = false;
+
+    function normalizeLetter(ch){
+      return (ch || "").toLowerCase().replace(/[^a-z]/g, "");
+    }
+
+    function renderWord(){
+      const chars = SECRET.split("");
+      wordEl.innerHTML = chars.map(c=>{
+        const show = guessed.has(c) ? c.toUpperCase() : "•";
+        return `<span>${show}</span>`;
+      }).join("");
+    }
+
+    function renderLetters(){
+      const A = "abcdefghijklmnopqrstuvwxyz".split("");
+      lettersEl.innerHTML = A.map(l=>{
+        let cls = "letter";
+        if (guessed.has(l)){
+          cls += SECRET.includes(l) ? " good" : " bad";
+        }
+        return `<div class="${cls}">${l.toUpperCase()}</div>`;
+      }).join("");
+    }
+
+    function renderFigure(){
+      parts.forEach((p,i)=>{
+        p.classList.toggle('show', i < misses);
+      });
+    }
+
+    function renderMeta(){
+      missesEl.textContent = String(misses);
+      triedCountEl.textContent = String(guessed.size);
+    }
+
+    function isWin(){
+      return SECRET.split("").every(c => guessed.has(c));
+    }
+
+    function setStatus(msg, good=false){
+      statusEl.textContent = msg;
+      statusEl.style.color = good ? "rgba(22,163,74,.95)" : "rgba(0,0,0,.65)";
+    }
+
+    function endGame(win){
+      finished = true;
+      guessBtn.disabled = true;
+      guessInput.disabled = true;
+
+      if (win){
+        setStatus("✅ Gagné ! Tu as débloqué la question 💘", true);
+        doneBox.style.display = "block";
+      } else {
+        setStatus(`💀 Perdu… Le mot était "${SECRET.toUpperCase()}". Recommence 😉`);
+        doneBox.style.display = "none";
+      }
+    }
+
+    function tryGuess(){
+      if (finished) return;
+      const l = normalizeLetter(guessInput.value);
+      guessInput.value = "";
+      guessInput.focus();
+
+      if (!l){
+        setStatus("Entre une lettre (A-Z).");
+        return;
+      }
+      if (guessed.has(l)){
+        setStatus("Tu as déjà essayé cette lettre 🙂");
+        return;
+      }
+
+      guessed.add(l);
+
+      if (!SECRET.includes(l)){
+        misses++;
+        setStatus("❌ Raté…");
+        renderFigure();
+        if (misses >= MAX_MISSES){
+          renderWord(); renderLetters(); renderMeta();
+          endGame(false);
+          return;
+        }
+      } else {
+        setStatus("✅ Bien joué !", true);
+      }
+
+      renderWord();
+      renderLetters();
+      renderMeta();
+
+      if (isWin()){
+        endGame(true);
+      }
+    }
+
+    function resetHangman(){
+      guessed = new Set();
+      misses = 0;
+      finished = false;
+      guessBtn.disabled = false;
+      guessInput.disabled = false;
+      doneBox.style.display = "none";
+      setStatus("Tape une lettre puis “Essayer”.");
+      parts.forEach(p=>p.classList.remove('show'));
+      renderWord();
+      renderLetters();
+      renderMeta();
+      guessInput.value = "";
+      guessInput.focus();
+    }
+
+    guessBtn.addEventListener('click', tryGuess);
+    resetBtn.addEventListener('click', resetHangman);
+    guessInput.addEventListener('keydown', (e)=>{
+      if (e.key === "Enter") tryGuess();
+    });
+    continueBtn.addEventListener('click', showQuestion);
+
+    reset // (rien)
+
+    // init hangman
+    resetHangman();
+
+    // -------------------- Question / moving NO forever --------------------
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn  = document.getElementById('noBtn');
+    const overlay = document.getElementById('overlay');
+    const closeBtn = document.getElementById('closeBtn');
+    const emoji = document.getElementById('emoji');
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+
+    // Personnalisation
+    const NAME = ""; // ex: "Sarah"
+    const FINAL_LINE = "Rendez-vous pour un date : pizza + film + câlins ? 🍕🎬";
+    if (NAME.trim()) title.textContent = `${NAME}, tu veux être ma Saint-Valentin ? 💘`;
+    document.getElementById('finalText').textContent = FINAL_LINE;
+
+    function resetNoButton(){
+      // remet le bouton dans le flux normal si tu reviens à l'écran
+      noBtn.style.position = "relative";
+      noBtn.style.left = "";
+      noBtn.style.top = "";
+      noBtn.style.transform = "";
+    }
+
+    function randomPositionForNo(){
+      const pad = 12;
       const maxX = window.innerWidth  - noBtn.offsetWidth  - pad;
       const maxY = window.innerHeight - noBtn.offsetHeight - pad;
 
@@ -279,32 +577,45 @@
       noBtn.style.position = 'fixed';
       noBtn.style.left = x + 'px';
       noBtn.style.top  = y + 'px';
+    }
 
-      // escalade “mignonne”
+    // IMPORTANT : à l'infini -> pas de limite sur le compteur,
+    // pas de cap sur l'agrandissement, et le bouton Non bouge toujours.
+    let noCount = 0;
+
+    function moveNoForever(){
+      noCount++;
+      randomPositionForNo();
+
+      // petites phrases qui tournent (cycle infini)
       const phrases = [
         "T’es sûr(e) ? 🥺",
         "Allez stp 😭",
         "Je boude 😤",
-        "Dernière chance 😇",
-        "Impossible 😈"
+        "Essaie encore 😇",
+        "Impossible 😈",
+        "Tu peux pas 😌",
+        "Hehe 😏",
+        "Nope 🙃"
       ];
-      subtitle.textContent = phrases[Math.min(noCount-1, phrases.length-1)];
-      emoji.textContent = ["🥺","😳","😭","😤","😈"][Math.min(noCount-1, 4)];
+      subtitle.textContent = phrases[(noCount-1) % phrases.length];
+      const em = ["🥺","😳","😭","😤","😈","😌","😏","🙃"];
+      emoji.textContent = em[(noCount-1) % em.length];
 
-      // le bouton Oui devient un peu plus “tentant”
-      const scale = 1 + Math.min(noCount, 6) * 0.08;
+      // Optionnel: le "Oui" devient plus grand… à l'infini 😈
+      const scale = 1 + noCount * 0.04; // augmente à chaque fuite
       yesBtn.style.transform = `scale(${scale})`;
-      yesBtn.style.boxShadow = `0 18px 40px rgba(0,0,0,.16)`;
     }
 
-    // Desktop: au survol, il fuit
-    noBtn.addEventListener('mouseenter', moveNoButton);
-    // Mobile: dès qu’on essaie de toucher
-    noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNoButton(); }, {passive:false});
+    // Le “Non” fuit au survol (desktop) + à l’approche du pointeur
+    noBtn.addEventListener('mouseenter', moveNoForever);
+    noBtn.addEventListener('mousemove', moveNoForever);
 
-    // Confettis quand “Oui”
+    // Mobile: dès qu’on essaie de toucher
+    noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNoForever(); }, {passive:false});
+
     function confettiBurst(){
-      const count = 120;
+      const count = 130;
       for (let i=0; i<count; i++){
         const c = document.createElement('div');
         c.className = 'confetti';
@@ -319,7 +630,6 @@
         c.style.width = w + 'px';
         c.style.height = h + 'px';
         c.style.borderRadius = (Math.random() > 0.6) ? '999px' : '2px';
-        // couleurs au hasard
         const colors = ["#fb7185","#f43f5e","#ec4899","#a78bfa","#60a5fa","#34d399","#f59e0b"];
         c.style.background = colors[Math.floor(Math.random()*colors.length)];
         c.style.transform = `translateX(${drift}px) rotate(${Math.random()*360}deg)`;
@@ -336,13 +646,13 @@
       emoji.textContent = "💞";
     });
 
-    closeBtn.addEventListener('click', ()=>{
-      overlay.style.display = 'none';
-    });
+    closeBtn.addEventListener('click', ()=> overlay.style.display = 'none');
+    window.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') overlay.style.display = 'none'; });
 
-    // Échap ferme l’overlay
-    window.addEventListener('keydown', (e)=>{
-      if (e.key === 'Escape') overlay.style.display = 'none';
+    // Si la fenêtre change (rotation mobile), on évite que Non sorte de l’écran
+    window.addEventListener('resize', ()=>{
+      // si "Non" est déjà en fixed, on le replace
+      if (getComputedStyle(noBtn).position === "fixed") randomPositionForNo();
     });
   </script>
 </body>
